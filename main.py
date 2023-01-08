@@ -84,9 +84,9 @@ def check_page(url):
     status = None
     if type == "GROUP":
         if "Join Group</button>" in html:
-            return "DELETED"
-        else:
             return "UP"
+        else:
+            return "DELETED"
     elif type == "GAME":
         if "under review. Try again later.</span>" in html:
             return "DELETED"
