@@ -34,7 +34,7 @@ def read_urls(array):
     count = len(array)
     array = set(array)
     count2 = len(array)
-    print("Removed", count - count2, "duplicates")
+    print("Removed", count - count2, "duplicates                                                                  ")
     array = list(array)
 
     # write updated file
@@ -153,7 +153,7 @@ def dump_results(deleted, up, failed):
     file.close()
 
     print("Deleted >> deleted.txt")
-    file = open("deleted.txt", 'w')
+    file = open("deleted.txt", 'a')
     for url in deleted:
         file.write("https://" + url + "\n")
     file.close()
