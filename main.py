@@ -50,7 +50,7 @@ def get_html(html_url, timeout=5, decode='utf-8', maxtries=2):
             with urllib.request.urlopen(html_url, None, timeout) as response:
                 return response.read().decode(decode)
         except Exception as e:
-            if "308" in str(e):
+            if "308" or "404" in str(e):
                 return "DELETED"
             print("Error:", e)
             if tries < (maxtries - 1):
@@ -78,15 +78,16 @@ def check_page(url):
     if type is None:
         return None
     html = get_html("https://" + url)
+    if html is None:
+        return None
     if html == "DELETED":
         return "DELETED"
     # print(html)
-    status = None
     if type == "GROUP":
-        if "Join Group</button>" in html:
-            return "UP"
-        else:
+        if "This group has been locked</p>" in html:
             return "DELETED"
+        else:
+            return "UP"
     elif type == "GAME":
         if "under review. Try again later.</span>" in html:
             return "DELETED"
@@ -104,7 +105,7 @@ def check_page(url):
             return "UP"
     else:
         print("Could not identify url type.")
-        return status
+        return None
 
 
 def run_checks(array):
@@ -118,7 +119,8 @@ def run_checks(array):
         count += 1
         cc = check_page(url)
         if cc is not None:
-            print("{0}% ({1}/{2}) [{3}]              ".format(math.floor((count / todo) * 100), count, todo, cc), end='\r')
+            print("{0}% ({1}/{2}) [{3}]              ".format(math.floor((count / todo) * 100), count, todo, cc),
+                  end='\r')
             if cc == "DELETED":
                 down.append(url)
             else:
@@ -135,6 +137,7 @@ def run_checks(array):
     print("Up:", len(up))
 
     return down, up, fails
+
 
 def dump_results(deleted, up, failed):
     # create file if not present
