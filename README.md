@@ -1,6 +1,6 @@
 # rbx-deletionchecker
 Checks to see if games, users, groups and games are deleted or still up.
->Requires python 3.8+
+>Requires python 3.8+ and urllib3
 
 ## How to use
 To run type `python main.py` in a terminal window in the folder main.py is located (= the repo folder).
