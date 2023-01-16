@@ -15,10 +15,10 @@ Report any false positives/negatives via a bug report.
 Below is the current code, keep in mind it is very barebones.
 ```
     if type == "GROUP":
-        if "Join Group</button>" in html:
-            return "UP"
-        else:
+        if "This group has been locked</p>" in html:
             return "DELETED"
+        else:
+            return "UP"
     elif type == "GAME":
         if "under review. Try again later.</span>" in html:
             return "DELETED"
