@@ -108,7 +108,6 @@ def check_page(url):
         else:
             return "UP"
     elif type == "USER":
-        print(html)
         if "\"description\":\"[ Content Deleted ]\"" in html or "\"description\":\"\"" in html:
             return "DELETED"
         else:
