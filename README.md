@@ -1,6 +1,6 @@
 # rbx-deletionchecker
 Checks to see if games, users, groups and games are deleted or still up.
->Requires python 3.8+
+>Requires python 3.8+ and urllib3
 
 ## How to use
 To run type `python main.py` in a terminal window in the folder main.py is located (= the repo folder).
@@ -12,26 +12,7 @@ To run type `python main.py` in a terminal window in the folder main.py is locat
 The tool currently uses a very weak system that looks for a specific string in the html of the page.
 Report any false positives/negatives via a bug report.
 
-Below is the current code, keep in mind it is very barebones.
-```
-    if type == "GROUP":
-        if "This group has been locked</p>" in html:
-            return "DELETED"
-        else:
-            return "UP"
-    elif type == "GAME":
-        if "under review. Try again later.</span>" in html:
-            return "DELETED"
-        else:
-            return "UP"
-    elif type == "USER":
-        if "[ Content Deleted ]</span>" in html:
-            return "DELETED"
-        else:
-            return "UP"
-    elif type == "CATALOG":
-        if "This item is not currently for sale.</div>" in html:
-            return "DELETED"
-        else:
-            return "UP"
-```
+- Group is considered deleted if it is locked
+- Game is considered deleted if unplayable [broken, this requires authentication]
+- Item is considered deleted if unpurchasable
+- User is considered deleted if description is cleared (so a lot of false reports of still being up)
