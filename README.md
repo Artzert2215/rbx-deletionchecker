@@ -14,5 +14,5 @@ Report any false positives/negatives via a bug report.
 
 - Group is considered deleted if it is locked
 - Game is considered deleted if unplayable [broken, this requires authentication]
-- Item is considered deleted if unpurchasable
+- Item (catalog and library) is considered deleted if unpurchasable
 - User is considered deleted if description is cleared (so a lot of false reports of still being up)
