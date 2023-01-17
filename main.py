@@ -1,5 +1,6 @@
 # This is a sample Python script.
 import math
+import time
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import urllib.request
@@ -48,12 +49,20 @@ def read_urls():
 
 def get_html(html_url, timeout=10, maxtries=2, decode='utf-8'):
     for tries in range(maxtries):
+        req = urllib.request.Request(html_url, data=None, headers={'User-agent': 'Deletion fetcher 0.1'})
         try:
-            with urllib.request.urlopen(html_url, data=None, timeout=timeout) as response:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
                 return response.read().decode(decode)
         except Exception as e:
             if "308" in str(e) or "404" in str(e):
                 return "DELETED"
+            if "429" in str(e):
+                print("Got http 429 (too many requests)! Waiting one minute...")
+                remaining = 60
+                while remaining > 0:
+                    print("Waiting for", remaining, "more seconds", end='\r')
+                    time.sleep(1)
+                    remaining -= 1
             print("Error:", e)
             if tries < (maxtries - 1):
                 continue
@@ -66,6 +75,7 @@ TYPE_DICT = {
     "GAME": "roblox.com/games",
     "CATALOG": "roblox.com/catalog",
     "GROUP": "roblox.com/groups",
+    "LIBRARY": "roblox.com/library",
 }
 
 
@@ -74,16 +84,18 @@ def get_url_type(url):
         if TYPE_DICT[type] in url:
             return type
 
+
 def get_item_id(url):
     id = url.split("/")[2]
     if not id.isnumeric():
-        print("Couldn't get id, got",id)
+        print("Couldn't get id, got", id)
     return url.split("/")[2]
 
 
 def check_page(url):
     type = get_url_type(url)
     if type is None:
+        print("Could not identify url type.")
         return None
     if type == "GROUP":
         url = "groups.roblox.com/v1/groups/" + get_item_id(url)
@@ -113,6 +125,11 @@ def check_page(url):
         else:
             return "UP"
     elif type == "CATALOG":
+        if "This item is not currently for sale.</div>" in html:
+            return "DELETED"
+        else:
+            return "UP"
+    elif type == "LIBRARY":
         if "This item is not currently for sale.</div>" in html:
             return "DELETED"
         else:
@@ -151,7 +168,7 @@ def run_checks(array):
     print("Total checked:", count)
     print("Failed:", len(fails))
     print("Deleted:", len(down))
-    print("Up:", len(up), "("+str(ofwichusers)+" are users)")
+    print("Up:", len(up), "(" + str(ofwichusers) + " are users)")
 
     return down, up, fails
 
